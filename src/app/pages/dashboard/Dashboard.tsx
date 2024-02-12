@@ -5,6 +5,7 @@ export const Dashboard = () => {
         <div>
             <p>Dashboard</p>
             <br />
+            
             <Link to="/login">Login</Link>
         </div>
     );
