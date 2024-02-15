@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { InputLogin } from "./components/InputLogin";
+import { ButtonLogin } from "./components/ButtonLogin";
 
 export const Login = () => {
 
     //useRef - is a hook to get a reference of a element and that way you can manipulate it
     const inputPassRef = useRef<HTMLInputElement>(null);
-    const buttonRef = useRef<HTMLButtonElement>(null);
 
     //useState - used when you want to save a state of a variable
     const [email, setEmail] = useState('');
@@ -51,13 +51,12 @@ export const Login = () => {
                     value={password}
                     type="password"
                     onchange={newValue => setPassword(newValue)}
-                    onPressEnter={() => buttonRef.current?.focus()}
                 />
 
                 <br />
-                <button ref={buttonRef} type="button" onClick={handleLogin}>
-                    Login
-                </button>
+                <ButtonLogin type="button" onClick={handleLogin}>
+                    Children
+                </ButtonLogin>
             </form>
         </div>
     );
