@@ -1,7 +1,7 @@
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { InputLogin } from "./components/InputLogin";
 import { ButtonLogin } from "./components/ButtonLogin";
-import { LoggedUserContext } from "../../shared/contexts";
+import { useLoggedUser } from "../../shared/hooks";
 
 export const Login = () => {
 
@@ -33,12 +33,12 @@ export const Login = () => {
     }, [email]);
 
     //access a context pre-set and shared - non-structured
-    const {UserName} = useContext(LoggedUserContext);
+    const {userName} = useLoggedUser();
 
     return (
         <div>
             <form>
-                <h1>{UserName}</h1>
+                <h1>{userName}</h1>
 
                 <p>Count characters in the email is: {emailLength}</p>
 

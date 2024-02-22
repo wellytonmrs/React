@@ -1,7 +1,8 @@
-import { createContext } from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
 
 interface ILoggedUserData {
-    UserName: string;
+    userName: string;
+    logout: () => void;
 }
 interface ILoggedUserProps {
     children: React.ReactNode;
@@ -11,8 +12,20 @@ export const LoggedUserContext = createContext<ILoggedUserData>({} as ILoggedUse
 
 export const LoggedUserContextProvider: React.FC<ILoggedUserProps> = ({ children }) => {
 
+    const handleLogged = useCallback(() => {
+        console.log("Log out executed!!");
+    }, []);
+
+    const [name, setName] = useState('');
+
+    useEffect(() => {
+        setTimeout(() => {
+            setName('Wellyton Rodrigues');
+        }, 600);
+    });
+
     return (
-        <LoggedUserContext.Provider value={{ UserName: 'Wellyton' }}>
+        <LoggedUserContext.Provider value={{ userName: name, logout: handleLogged }}>
             {children}
         </LoggedUserContext.Provider>
     );

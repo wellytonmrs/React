@@ -1,28 +1,33 @@
-import { useContext, useRef } from "react";
+import { useRef } from "react";
 import { Link } from "react-router-dom";
-import { LoggedUserContext } from "../../shared/contexts";
+import { useLoggedUser } from "../../shared/hooks";
 
 export const Dashboard = () => {
 
     //useRef - has a way to store data without calling a rerender
-    const counterRef = useRef({ counter: 0 });
+    const counterRef = useRef(0);
 
     //access a context pre-set and shared
-    const loggedUserContext = useContext(LoggedUserContext);
+    const {userName, logout} = useLoggedUser();
 
     return (
         <div>
             <p>Dashboard</p>
 
-            <h1>{loggedUserContext.UserName}</h1>
+            <h1>{userName}</h1>
 
-            <p>Clicks Count: {counterRef.current.counter}</p>
-            <button onClick={() => counterRef.current.counter++}>
+            <p>Clicks Count: {counterRef.current}</p>
+            <button onClick={() => counterRef.current++}>
                 Add up
+            </button>
+            <button onClick={() => console.log(counterRef.current)}>
+               Log
             </button>
             <br /><br /><br />
 
             <Link to="/login">Login</Link>
+
+            <button onClick={logout}>Logout</button>
         </div>
     );
 }
