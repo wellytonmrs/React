@@ -1,33 +1,40 @@
-import { useRef } from "react";
-import { Link } from "react-router-dom";
-import { useLoggedUser } from "../../shared/hooks";
+import { useCallback, useState } from "react";
+
 
 export const Dashboard = () => {
 
-    //useRef - has a way to store data without calling a rerender
-    const counterRef = useRef(0);
+    const [list, setList] = useState<string[]>(['Example1', 'Example2']);
+    const handleInputKeyDown: React.KeyboardEventHandler<HTMLInputElement> =
+        useCallback((e) => {
 
-    //access a context pre-set and shared
-    const {userName, logout} = useLoggedUser();
+            if (e.key === 'Enter') {
+                if (e.currentTarget.value.trim().length === 0) return;
+
+                const value = e.currentTarget.value;
+                e.currentTarget.value = '';
+
+                setList((oldList) => {
+
+                    if(oldList.includes(value)) return oldList;
+
+                    return [...oldList, value];
+                });
+            }
+        }, []);
 
     return (
         <div>
-            <p>Dashboard</p>
+            <p>List</p>
 
-            <h1>{userName}</h1>
+            <input onKeyDown={handleInputKeyDown} />
 
-            <p>Clicks Count: {counterRef.current}</p>
-            <button onClick={() => counterRef.current++}>
-                Add up
-            </button>
-            <button onClick={() => console.log(counterRef.current)}>
-               Log
-            </button>
-            <br /><br /><br />
+            <ul>
+                {list.map((value, index) => {
+                    return <li key={index}>{++index}: {value}</li>
+                })}
+            </ul>
 
-            <Link to="/login">Login</Link>
 
-            <button onClick={logout}>Logout</button>
         </div>
     );
 }
