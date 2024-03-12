@@ -12,7 +12,7 @@ interface Post {
     body: string;
 }
 
-function Learning() {
+export const Learning = () => { 
 
     const [user, setUser] = useState<UserData>({ name: '', age: 0 });
     const [post, setPost] = useState<Post | null>(null);
@@ -62,7 +62,7 @@ function Learning() {
     };
 
     // Memoize the callback function
-    const memoizedHandleClick = useCallback(handleClick, [multiplier]);
+    const memoizedHandleClick = useCallback(handleClick, [count, multiplier]);
 
 
     return (
@@ -100,5 +100,3 @@ function Learning() {
         </div>
     );
 }
-
-export default Learning;
