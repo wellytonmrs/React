@@ -1,9 +1,14 @@
 import { useCallback, useState } from "react";
 
+interface IListItem {
+    title: string;
+    isSelected: boolean;
+}
 
 export const Dashboard = () => {
 
-    const [list, setList] = useState<string[]>(['Example1', 'Example2']);
+    const [list, setList] = useState<IListItem[]>([]);
+
     const handleInputKeyDown: React.KeyboardEventHandler<HTMLInputElement> =
         useCallback((e) => {
 
@@ -15,9 +20,9 @@ export const Dashboard = () => {
 
                 setList((oldList) => {
 
-                    if(oldList.includes(value)) return oldList;
+                    if (oldList.some((ListItem) => ListItem.title === value)) return oldList;
 
-                    return [...oldList, value];
+                    return [...oldList, { title: value, isSelected: false }];
                 });
             }
         }, []);
@@ -28,9 +33,28 @@ export const Dashboard = () => {
 
             <input onKeyDown={handleInputKeyDown} />
 
+            <p>{list.filter((listItem) => listItem.isSelected).length}</p>
+
             <ul>
-                {list.map((value, index) => {
-                    return <li key={index}>{++index}: {value}</li>
+                {list.map((ListItem) => {
+                    return <li key={ListItem.title}>
+                        <input
+                            type="checkbox"
+                            checked={ListItem.isSelected}
+                            onChange={() => {
+                                setList(oldList => {
+                                    return oldList.map(oldListItem => {
+                                        const newIsSelected = oldListItem.title === ListItem.title
+                                            ? !oldListItem.isSelected
+                                            : oldListItem.isSelected;
+
+                                        return { ...oldListItem, isSelected: newIsSelected, };
+                                    });
+                                });
+                            }} />
+
+                        {ListItem.title}
+                    </li>
                 })}
             </ul>
 
