@@ -1,13 +1,14 @@
 import { useCallback, useState } from "react";
 
-interface IListItem {
+interface ITaskItens {
+    id: number;
     title: string;
-    isSelected: boolean;
+    isCompleted: boolean;
 }
 
 export const Dashboard = () => {
 
-    const [list, setList] = useState<IListItem[]>([]);
+    const [list, setList] = useState<ITaskItens[]>([]);
 
     const handleInputKeyDown: React.KeyboardEventHandler<HTMLInputElement> =
         useCallback((e) => {
@@ -22,7 +23,7 @@ export const Dashboard = () => {
 
                     if (oldList.some((ListItem) => ListItem.title === value)) return oldList;
 
-                    return [...oldList, { title: value, isSelected: false }];
+                    return [...oldList, { id: oldList.length, title: value, isCompleted: false }];
                 });
             }
         }, []);
@@ -33,22 +34,22 @@ export const Dashboard = () => {
 
             <input onKeyDown={handleInputKeyDown} />
 
-            <p>{list.filter((listItem) => listItem.isSelected).length}</p>
+            <p>{list.filter((listItem) => listItem.isCompleted).length}</p>
 
             <ul>
                 {list.map((ListItem) => {
-                    return <li key={ListItem.title}>
+                    return <li key={ListItem.id}>
                         <input
                             type="checkbox"
-                            checked={ListItem.isSelected}
+                            checked={ListItem.isCompleted}
                             onChange={() => {
                                 setList(oldList => {
                                     return oldList.map(oldListItem => {
                                         const newIsSelected = oldListItem.title === ListItem.title
-                                            ? !oldListItem.isSelected
-                                            : oldListItem.isSelected;
+                                            ? !oldListItem.isCompleted
+                                            : oldListItem.isCompleted;
 
-                                        return { ...oldListItem, isSelected: newIsSelected, };
+                                        return { ...oldListItem, isCompleted: newIsSelected, };
                                     });
                                 });
                             }} />
