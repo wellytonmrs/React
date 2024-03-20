@@ -5,7 +5,7 @@ import HCMore from "highcharts/highcharts-more";
 
 HCMore(Highcharts);
 
-interface ChartData {
+export interface ChartData {
     name: string;
     x: number;
     low: number;
@@ -19,7 +19,7 @@ interface ChartProps {
     height: string;
 }
 
-const Charts: React.FC<ChartProps> = ({ data, height }) => {
+const ColumnRangeChart : React.FC<ChartProps> = ({ data, height }) => {
     const options: Highcharts.Options = {
         title: {
             text: ''
@@ -88,4 +88,4 @@ const Charts: React.FC<ChartProps> = ({ data, height }) => {
     );
 }
 
-export default Charts;
+export default ColumnRangeChart;

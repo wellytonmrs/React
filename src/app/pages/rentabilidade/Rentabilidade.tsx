@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import Charts from '../../shared/components/Charts';
+import Charts, { ChartData } from '../../shared/components/ColumnRangeChart';
 
 
-export const Rentabilidade: React.FC  = () => { 
+export const Rentabilidade: React.FC = () => {
 
     const [cmvDivWidth, setCmvDiv] = useState<number>(0);
     const [fatDivWidth, setFatDiv] = useState<number>(0);
@@ -13,30 +13,33 @@ export const Rentabilidade: React.FC  = () => {
     const [prejDivWidth, setPrejDiv] = useState<number>(0);
     const [mcDiv, setMcDiv] = useState<string>("secondRow");
 
+    /*const [self, setSelf] = useState({
+        fat: 2.24,//Number(response.responseBody.somaFaturamento);
+        cmv: 0.86,//Number(response.responseBody.somaCustoMercadoriaVendida);
+        gv: 0.48,//Number(response.responseBody.somaGastoVariavel);
+        gf: 0.22,//Number(response.responseBody.somaGastoFixo);
+        mc: 0.90,//Number(response.responseBody.margemContrib);
+        lucro: 0.68,//Number(response.responseBody.somaLucro);
+    });*/
+
     const [self, setSelf] = useState({
-        cmv: 30.00,
-        fat: 165.00,
-        gv: 19.80,
-        mc: 115.20,
-        gf: 16.50,
-        lucro: 98.70
+        fat: 1542.00,//Number(response.responseBody.somaFaturamento);
+        cmv: 1384.10,//Number(response.responseBody.somaCustoMercadoriaVendida);
+        gv: 246.72,//Number(response.responseBody.somaGastoVariavel);
+        gf: 154.20,//Number(response.responseBody.somaGastoFixo);
+        mc: -88.82,//Number(response.responseBody.margemContrib);
+        lucro: -243.02,//Number(response.responseBody.somaLucro);
     });
 
-    interface ChartData {
-        name: string;
-        x: number;
-        low: number;
-        high: number;
-        color: string;
-    }
 
     const [chartData, setChartData] = useState<ChartData[]>([
-        { name: 'fat', x: 0, low: 0, high: 0, color: '#157A00' },
-        { name: 'cus', x: 1, low: 0, high: 0, color: '#EFB103' },
-        { name: 'gas', x: 1, low: 0, high: 0, color: '#A2ABB9' },
-        { name: 'mar', x: 1, low: 0, high: 0, color: '#712EFF' },
-        { name: 'par', x: 2, low: 0, high: 0, color: '#AF2277' },
-        { name: 'luc', x: 2, low: 0, high: 0, color: '#01AC98' }
+        { name: 'fat', x: 0, low: 0, high: 0, color: '#157A00', visible: true },
+        { name: 'cus', x: 1, low: 0, high: 0, color: '#EFB103', visible: true },
+        { name: 'gas', x: 1, low: 0, high: 0, color: '#A2ABB9', visible: true },
+        { name: 'mar', x: 1, low: 0, high: 0, color: '#712EFF', visible: true },
+        { name: 'par', x: 2, low: 0, high: 0, color: '#AF2277', visible: true },
+        { name: 'luc', x: 2, low: 0, high: 0, color: '#01AC98', visible: false },
+        { name: 'pre', x: 3, low: 0, high: 0, color: '#FF0000', visible: false }
     ]);
 
     useEffect(() => {
@@ -75,43 +78,69 @@ export const Rentabilidade: React.FC  = () => {
 
         if (self.lucro > 0) {
             setLucroDiv(Math.abs(self.lucro) * widthRate);
+            setPrejDiv(0);
         } else {
+            setLucroDiv(0);
             setPrejDiv(Math.abs(self.lucro) * widthRate);
         }
 
         setChartData(prevData => prevData.map(item => {
             if (item.name === 'fat') {
-                return { ...item, low:0, high: fatDivWidth };
+                return { ...item, low: 0, high: fatDivWidth };
             }
             return item;
         }));
         setChartData(prevData => prevData.map(item => {
             if (item.name === 'cus') {
-                return { ...item, low:0, high: cmvDivWidth };
+                return { ...item, low: 0, high: cmvDivWidth };
             }
             return item;
         }));
         setChartData(prevData => prevData.map(item => {
             if (item.name === 'gas') {
-                return { ...item, low:cmvDivWidth, high: cmvDivWidth + gvDivWidth };
+                return { ...item, low: cmvDivWidth, high: cmvDivWidth + gvDivWidth };
             }
             return item;
         }));
+        let mardiv = 1;
+        let marlow = cmvDivWidth + gvDivWidth;
+        let marhigh = cmvDivWidth + gvDivWidth + mcDivWidth;
+        if (mcDiv === 'thirdRow') {
+            mardiv = 2;
+            marlow = cmvDivWidth + gvDivWidth - mcDivWidth;
+            marhigh = cmvDivWidth + gvDivWidth;
+        }
+
         setChartData(prevData => prevData.map(item => {
             if (item.name === 'mar') {
-                return { ...item, low:cmvDivWidth+gvDivWidth, high: cmvDivWidth + gvDivWidth + mcDivWidth };
+
+                return { ...item, x: mardiv, low: marlow, high: marhigh };
             }
             return item;
         }));
         setChartData(prevData => prevData.map(item => {
             if (item.name === 'par') {
-                return { ...item, low:cmvDivWidth+gvDivWidth, high: cmvDivWidth + gvDivWidth + gfDivWidth };
+                return { ...item, low: cmvDivWidth + gvDivWidth, high: cmvDivWidth + gvDivWidth + gfDivWidth };
             }
             return item;
         }));
         setChartData(prevData => prevData.map(item => {
             if (item.name === 'luc') {
-                return { ...item, low:cmvDivWidth+gvDivWidth+gfDivWidth, high: cmvDivWidth + gvDivWidth + gfDivWidth + lucroDivWidth };
+                let lucVisible = true;
+                if (lucroDivWidth === 0) {
+                    lucVisible = false;
+                }
+                return { ...item, low: cmvDivWidth + gvDivWidth + gfDivWidth, high: cmvDivWidth + gvDivWidth + gfDivWidth + lucroDivWidth, visible: lucVisible };
+            }
+            return item;
+        }));
+        setChartData(prevData => prevData.map(item => {
+            if (item.name === 'pre') {
+                let preVisible = false;
+                if (lucroDivWidth === 0) {
+                    preVisible = true;
+                }
+                return { ...item, low: marlow, high: marlow + prejDivWidth, visible: preVisible };
             }
             return item;
         }));
@@ -192,7 +221,7 @@ export const Rentabilidade: React.FC  = () => {
 
             <div >
                 <h2>Chart Rentabilidade:</h2>
-                <Charts data={chartData} height="350px" />
+                <Charts data={chartData} height={mcDiv === 'thirdRow' ? "300px" : "225px"} />
             </div>
 
         </div>
