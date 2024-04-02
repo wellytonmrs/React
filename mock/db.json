@@ -3,17 +3,22 @@
     {
       "id": 1,
       "title": "Task 01",
-      "isCompleted": false
+      "isCompleted": true
     },
     {
       "id": 2,
-      "title": "Class",
-      "isCompleted": false
+      "title": "Task 02",
+      "isCompleted": true
     },
     {
-      "title": "shop",
-      "completed": false,
+      "title": "Task 03",
+      "isCompleted": true,
       "id": 3
+    },
+    {
+      "title": "Task 04",
+      "isCompleted": false,
+      "id": 4
     }
   ]
 }

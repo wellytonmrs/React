@@ -1,7 +1,7 @@
 import { API } from "../ApiConfig";
 import { ApiException } from "../ApiException";
 
-interface ITaskItem {
+export interface ITaskItem {
     id: number;
     title: string;
     isCompleted: boolean;
@@ -24,7 +24,7 @@ const getById = async (id: number): Promise<ITaskItem | ApiException> => {
     }
 
 };
-const create = async (dataToCreate: Omit<ITaskItem, `id`>): Promise<ITaskItem[] | ApiException> => {
+const create = async (dataToCreate: Omit<ITaskItem, `id`>): Promise<ITaskItem | ApiException> => {
     try {
         const { data } = await API().post<any>('/tasks', dataToCreate);
         return data;
@@ -33,9 +33,9 @@ const create = async (dataToCreate: Omit<ITaskItem, `id`>): Promise<ITaskItem[] 
     }
 
 };
-const updateById = async (id: number, dataToUpdate: ITaskItem): Promise<ITaskItem[] | ApiException> => {
+const updateById = async (id: number, dataToUpdate: ITaskItem): Promise<ITaskItem | ApiException> => {
     try {
-        const { data } = await API().put<any>(`/tasks${id}`, dataToUpdate);
+        const { data } = await API().put<any>(`/tasks/${id}`, dataToUpdate);
         return data;
     } catch (error: any) {
         return new ApiException(error.message || 'Erro ao atualizar o registro.');
