@@ -61,6 +61,20 @@ export const Dashboard = () => {
             });
     }, [list]);
 
+    const handledelete = useCallback((id: number) => {
+
+        TarefaService.deleteById(id)
+            .then((result) => {
+                if (result instanceof ApiException) {
+                    alert(result.message);
+                } else {
+                    setList(oldList => {
+                        return oldList.filter(oldListItem => oldListItem.id !== id);
+                    });
+                }
+            });
+    }, []);
+
     return (
         <div>
             <p>List</p>
@@ -75,6 +89,7 @@ export const Dashboard = () => {
                             onChange={() => handleToggleComplete(ListItem.id)}
                         />
                         {ListItem.title}
+                        <button onClick={() => handledelete(ListItem.id)}>Delete</button>
                     </li>
                 })}
             </ul>
